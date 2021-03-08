@@ -75,7 +75,7 @@ class DeviceCodeRepository implements DeviceCodeRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getDeviceCodeByIdentifier($deviceCodeId, $grantType, ClientEntityInterface $clientEntity)
+    public function getDeviceCodeEntityByDeviceCode($deviceCodeId, $grantType, ClientEntityInterface $clientEntity)
     {
         $deviceCode = $this->deviceCodeRepository->find($deviceCodeId);
 
@@ -94,8 +94,8 @@ class DeviceCodeRepository implements DeviceCodeRepositoryInterface
 
         $deviceCode->touch();
 
-        $this->events->listen(AccessTokenCreated::class, function($event) use ($deviceCodeEntity) {
-            if($event->clientId === $deviceCodeEntity->getClient()->getIdentifier()) {
+        $this->events->listen(AccessTokenCreated::class, function ($event) use ($deviceCodeEntity) {
+            if ($event->clientId === $deviceCodeEntity->getClient()->getIdentifier()) {
                 // Exchange request for token
                 $token = $this->tokenRepository->find($event->tokenId);
                 $token->name = $deviceCodeEntity->getUserCode();
