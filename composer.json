@@ -70,7 +70,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:Bloemendaal/oauth2-server.git"
+            "url": "https://github.com/Bloemendaal/oauth2-server"
         }
     ]
 }
