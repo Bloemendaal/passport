@@ -11,7 +11,7 @@ use League\OAuth2\Server\Entities\DeviceCodeEntityInterface;
 
 class DeviceCode implements DeviceCodeEntityInterface
 {
-    use EntityTrait, TokenEntityTrait, DeviceCodeTrait {
+    use DeviceCodeTrait, EntityTrait, TokenEntityTrait {
         checkRetryFrequency as parentCheckRetryFrequency;
     }
 
@@ -29,7 +29,7 @@ class DeviceCode implements DeviceCodeEntityInterface
      */
     public function setUserCode($userCode)
     {
-        if(! preg_match("/\w+-\w+/", $userCode)) {
+        if (!preg_match("/\w+-\w+/", $userCode)) {
             $userCode = substr_replace($userCode, '-', 4, 0);
         }
 
