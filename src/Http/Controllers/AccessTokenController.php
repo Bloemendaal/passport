@@ -5,8 +5,8 @@ namespace Laravel\Passport\Http\Controllers;
 use Laravel\Passport\TokenRepository;
 use Lcobucci\JWT\Parser as JwtParser;
 use League\OAuth2\Server\AuthorizationServer;
+use Nyholm\Psr7\Response as Psr7Response;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response as Psr7Response;
 
 class AccessTokenController
 {
@@ -30,6 +30,8 @@ class AccessTokenController
      * The JWT parser instance.
      *
      * @var \Lcobucci\JWT\Parser
+     *
+     * @deprecated This property will be removed in a future Passport version.
      */
     protected $jwt;
 

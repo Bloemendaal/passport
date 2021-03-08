@@ -4,8 +4,9 @@ namespace Laravel\Passport;
 
 use Lcobucci\JWT\Parser as JwtParser;
 use League\OAuth2\Server\AuthorizationServer;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
+use Nyholm\Psr7\Response;
+use Nyholm\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
 class PersonalAccessTokenFactory
 {
@@ -34,6 +35,8 @@ class PersonalAccessTokenFactory
      * The JWT token parser instance.
      *
      * @var \Lcobucci\JWT\Parser
+     *
+     * @deprecated This property will be removed in a future Passport version.
      */
     protected $jwt;
 
@@ -89,14 +92,16 @@ class PersonalAccessTokenFactory
      * @param  \Laravel\Passport\Client  $client
      * @param  mixed  $userId
      * @param  array  $scopes
-     * @return \Zend\Diactoros\ServerRequest
+     * @return \Psr\Http\Message\ServerRequestInterface
      */
     protected function createRequest($client, $userId, array $scopes)
     {
-        return (new ServerRequest)->withParsedBody([
+        $secret = Passport::$hashesClientSecrets ? $this->clients->getPersonalAccessClientSecret() : $client->secret;
+
+        return (new ServerRequest('POST', 'not-important'))->withParsedBody([
             'grant_type' => 'personal_access',
             'client_id' => $client->id,
-            'client_secret' => $client->secret,
+            'client_secret' => $secret,
             'user_id' => $userId,
             'scope' => implode(' ', $scopes),
         ]);
@@ -105,10 +110,10 @@ class PersonalAccessTokenFactory
     /**
      * Dispatch the given request to the authorization server.
      *
-     * @param  \Zend\Diactoros\ServerRequest  $request
+     * @param  \Psr\Http\Message\ServerRequestInterface  $request
      * @return array
      */
-    protected function dispatchRequestToAuthorizationServer(ServerRequest $request)
+    protected function dispatchRequestToAuthorizationServer(ServerRequestInterface $request)
     {
         return json_decode($this->server->respondToAccessTokenRequest(
             $request, new Response
@@ -119,12 +124,12 @@ class PersonalAccessTokenFactory
      * Get the access token instance for the parsed response.
      *
      * @param  array  $response
-     * @return Token
+     * @return \Laravel\Passport\Token
      */
     protected function findAccessToken(array $response)
     {
         return $this->tokens->find(
-            $this->jwt->parse($response['access_token'])->getClaim('jti')
+            $this->jwt->parse($response['access_token'])->claims()->get('jti')
         );
     }
 }

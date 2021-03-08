@@ -4,7 +4,7 @@ namespace Laravel\Passport\Http\Controllers;
 
 use Illuminate\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
-use Zend\Diactoros\Response as Psr7Response;
+use Nyholm\Psr7\Response as Psr7Response;
 
 class ApproveAuthorizationController
 {
@@ -36,6 +36,8 @@ class ApproveAuthorizationController
      */
     public function approve(Request $request)
     {
+        $this->assertValidAuthToken($request);
+
         $authRequest = $this->getAuthRequestFromSession($request);
 
         return $this->convertResponse(
