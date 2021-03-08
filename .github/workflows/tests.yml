@@ -36,6 +36,8 @@ jobs:
         run: |
           composer require "illuminate/contracts=${{ matrix.laravel }}" --no-update
           composer update --prefer-dist --no-interaction --no-progress
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Execute tests
         run: vendor/bin/phpunit --verbose
