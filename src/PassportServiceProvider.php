@@ -35,7 +35,7 @@ class PassportServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'passport');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'passport');
 
         $this->deleteCookieOnLogout();
 
@@ -43,15 +43,15 @@ class PassportServiceProvider extends ServiceProvider
             $this->registerMigrations();
 
             $this->publishes([
-                __DIR__.'/../database/migrations' => database_path('migrations'),
+                __DIR__ . '/../database/migrations' => database_path('migrations'),
             ], 'passport-migrations');
 
             $this->publishes([
-                __DIR__.'/../resources/views' => base_path('resources/views/vendor/passport'),
+                __DIR__ . '/../resources/views' => base_path('resources/views/vendor/passport'),
             ], 'passport-views');
 
             $this->publishes([
-                __DIR__.'/../config/passport.php' => config_path('passport.php'),
+                __DIR__ . '/../config/passport.php' => config_path('passport.php'),
             ], 'passport-config');
 
             $this->commands([
@@ -71,8 +71,8 @@ class PassportServiceProvider extends ServiceProvider
      */
     protected function registerMigrations()
     {
-        if (Passport::$runsMigrations && ! config('passport.client_uuids')) {
-            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        if (Passport::$runsMigrations && !config('passport.client_uuids')) {
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         }
     }
 
@@ -83,7 +83,7 @@ class PassportServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/passport.php', 'passport');
+        $this->mergeConfigFrom(__DIR__ . '/../config/passport.php', 'passport');
 
         Passport::setClientUuids($this->app->make(Config::class)->get('passport.client_uuids', false));
 
@@ -106,32 +106,39 @@ class PassportServiceProvider extends ServiceProvider
                 $server->setDefaultScope(Passport::$defaultScope);
 
                 $server->enableGrantType(
-                    $this->makeAuthCodeGrant(), Passport::tokensExpireIn()
+                    $this->makeAuthCodeGrant(),
+                    Passport::tokensExpireIn()
                 );
 
                 $server->enableGrantType(
-                    $this->makeRefreshTokenGrant(), Passport::tokensExpireIn()
+                    $this->makeRefreshTokenGrant(),
+                    Passport::tokensExpireIn()
                 );
 
                 $server->enableGrantType(
-                    $this->makePasswordGrant(), Passport::tokensExpireIn()
+                    $this->makePasswordGrant(),
+                    Passport::tokensExpireIn()
                 );
 
                 $server->enableGrantType(
-                    new PersonalAccessGrant, Passport::personalAccessTokensExpireIn()
+                    new PersonalAccessGrant,
+                    Passport::personalAccessTokensExpireIn()
                 );
 
                 $server->enableGrantType(
-                    new ClientCredentialsGrant, Passport::tokensExpireIn()
+                    new ClientCredentialsGrant,
+                    Passport::tokensExpireIn()
                 );
 
                 $server->enableGrantType(
-                    $this->makeDeviceCodeGrant(), Passport::tokensExpireIn()
+                    $this->makeDeviceCodeGrant(),
+                    Passport::tokensExpireIn()
                 );
 
                 if (Passport::$implicitGrantEnabled) {
                     $server->enableGrantType(
-                        $this->makeImplicitGrant(), Passport::tokensExpireIn()
+                        $this->makeImplicitGrant(),
+                        Passport::tokensExpireIn()
                     );
                 }
             });
@@ -206,7 +213,8 @@ class PassportServiceProvider extends ServiceProvider
             $this->app->make(Bridge\DeviceCodeRepository::class),
             $this->app->make(Bridge\RefreshTokenRepository::class),
             new DateInterval('PT10M'),
-            5 // @todo make the retryInterval configurable via the config
+            /** @todo make the retryInterval configurable via the config */
+            5
         );
 
         $grant->setVerificationUri(url(Passport::$deviceCodeVerificationUri));
@@ -291,10 +299,10 @@ class PassportServiceProvider extends ServiceProvider
      */
     protected function makeCryptKey($type)
     {
-        $key = str_replace('\\n', "\n", $this->app->make(Config::class)->get('passport.'.$type.'_key'));
+        $key = str_replace('\\n', "\n", $this->app->make(Config::class)->get('passport.' . $type . '_key'));
 
-        if (! $key) {
-            $key = 'file://'.Passport::keyPath('oauth-'.$type.'.key');
+        if (!$key) {
+            $key = 'file://' . Passport::keyPath('oauth-' . $type . '.key');
         }
 
         return new CryptKey($key, null, false);

@@ -57,7 +57,7 @@ class ClientRepository
     {
         $client = $this->find($id);
 
-        return $client && ! $client->revoked ? $client : null;
+        return $client && !$client->revoked ? $client : null;
     }
 
     /**
@@ -72,9 +72,9 @@ class ClientRepository
         $client = Passport::client();
 
         return $client
-                    ->where($client->getKeyName(), $clientId)
-                    ->where('user_id', $userId)
-                    ->first();
+            ->where($client->getKeyName(), $clientId)
+            ->where('user_id', $userId)
+            ->first();
     }
 
     /**
@@ -86,8 +86,8 @@ class ClientRepository
     public function forUser($userId)
     {
         return Passport::client()
-                    ->where('user_id', $userId)
-                    ->orderBy('name', 'asc')->get();
+            ->where('user_id', $userId)
+            ->orderBy('name', 'asc')->get();
     }
 
     /**
@@ -118,7 +118,7 @@ class ClientRepository
 
         $client = Passport::personalAccessClient();
 
-        if (! $client->exists()) {
+        if (!$client->exists()) {
             throw new RuntimeException('Personal access client not found. Please create one.');
         }
 
@@ -198,7 +198,7 @@ class ClientRepository
      */
     public function createDeviceCodeGrantClient($userId, $name, $redirect, $provider = null)
     {
-        return $this->create($userId, $name, $redirect, $provider, false, false, true, true);
+        return $this->create($userId, $name, $redirect, $provider, false, false, true, false);
     }
 
     /**
