@@ -14,38 +14,39 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.3|^8.0",
         "ext-json": "*",
-        "firebase/php-jwt": "^3.0|^4.0|^5.0",
-        "guzzlehttp/guzzle": "^6.0",
-        "illuminate/auth": "^6.0|^7.0",
-        "illuminate/console": "^6.0|^7.0",
-        "illuminate/container": "^6.0|^7.0",
-        "illuminate/contracts": "^6.0|^7.0",
-        "illuminate/cookie": "^6.0|^7.0",
-        "illuminate/database": "^6.0|^7.0",
-        "illuminate/encryption": "^6.0|^7.0",
-        "illuminate/http": "^6.0|^7.0",
-        "illuminate/support": "^6.0|^7.0",
-        "laminas/laminas-diactoros": "^2.2",
-        "league/oauth2-server": "dev-yovchev/device-flow",
-        "phpseclib/phpseclib": "^2.0",
-        "symfony/psr-http-message-bridge": "^1.0"
+        "firebase/php-jwt": "^5.0",
+        "illuminate/auth": "^8.2",
+        "illuminate/console": "^8.2",
+        "illuminate/container": "^8.2",
+        "illuminate/contracts": "^8.2",
+        "illuminate/cookie": "^8.2",
+        "illuminate/database": "^8.2",
+        "illuminate/encryption": "^8.2",
+        "illuminate/http": "^8.2",
+        "illuminate/support": "^8.2",
+        "lcobucci/jwt": "^3.4|^4.0",
+        "league/oauth2-server": "dev-master",
+        "nyholm/psr7": "^1.3",
+        "phpseclib/phpseclib": "^2.0|^3.0",
+        "symfony/psr-http-message-bridge": "^2.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
-        "orchestra/testbench": "^4.4|^5.0",
-        "phpunit/phpunit": "^8.0"
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.3"
     },
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/yovchev/oauth2-server"
+            "url": "git@github.com:Bloemendaal/oauth2-server.git"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Laravel\\Passport\\": "src/"
+            "Laravel\\Passport\\": "src/",
+            "Laravel\\Passport\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
@@ -55,7 +56,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "8.x-dev"
+            "dev-master": "10.x-dev"
         },
         "laravel": {
             "providers": [

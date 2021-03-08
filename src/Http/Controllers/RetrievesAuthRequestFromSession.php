@@ -20,6 +20,8 @@ trait RetrievesAuthRequestFromSession
     protected function assertValidAuthToken(Request $request)
     {
         if ($request->has('auth_token') && $request->session()->get('authToken') !== $request->get('auth_token')) {
+            $request->session()->forget(['authToken', 'authRequest']);
+
             throw InvalidAuthTokenException::different();
         }
     }
@@ -39,7 +41,7 @@ trait RetrievesAuthRequestFromSession
                 throw new Exception('Authorization request was not present in the session.');
             }
 
-            $authRequest->setUser(new User($request->user()->getKey()));
+            $authRequest->setUser(new User($request->user()->getAuthIdentifier()));
 
             $authRequest->setAuthorizationApproved(true);
         });
