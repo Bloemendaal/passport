@@ -75,7 +75,7 @@ class DeviceCodeRepository implements DeviceCodeRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getDeviceCodeEntityByDeviceCode($deviceCodeId, $grantType, ClientEntityInterface $clientEntity)
+    public function getDeviceCodeByIdentifier($deviceCodeId, $grantType, ClientEntityInterface $clientEntity)
     {
         $deviceCode = $this->deviceCodeRepository->find($deviceCodeId);
 
