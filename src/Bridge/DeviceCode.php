@@ -11,9 +11,7 @@ use League\OAuth2\Server\Entities\DeviceCodeEntityInterface;
 
 class DeviceCode implements DeviceCodeEntityInterface
 {
-    use DeviceCodeTrait, EntityTrait, TokenEntityTrait {
-        checkRetryFrequency as parentCheckRetryFrequency;
-    }
+    use DeviceCodeTrait, EntityTrait, TokenEntityTrait;
 
     /**
      * @param  \Laravel\Passport\DeviceCodeRepository  $deviceCodeRepository
@@ -34,23 +32,5 @@ class DeviceCode implements DeviceCodeEntityInterface
         }
 
         $this->userCode = $userCode;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function checkRetryFrequency(DateTimeImmutable $nowDateTime)
-    {
-        $slowDownSeconds = $this->parentCheckRetryFrequency($nowDateTime);
-
-        if ($slowDownSeconds) {
-            $slowDownSeconds = ceil($slowDownSeconds * 2.0);
-            $this->deviceCodeRepository->setRetryInterval(
-                $this->getIdentifier(),
-                $slowDownSeconds
-            );
-        }
-
-        return $slowDownSeconds;
     }
 }
