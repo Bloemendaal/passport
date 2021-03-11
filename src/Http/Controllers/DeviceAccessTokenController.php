@@ -49,8 +49,8 @@ class DeviceAccessTokenController
     public function request(Request $request)
     {
         $deviceCode = DeviceCode::where('user_code', $request->user_code)
-                                ->where('expires_at', '>', now())
-                                ->first();
+            ->where('expires_at', '>', now())
+            ->first();
 
         return $deviceCode ?? response()->json([
             'message' => __('User code has expired or is invalid please try again.')
@@ -66,9 +66,9 @@ class DeviceAccessTokenController
     public function forUser(Request $request)
     {
         return $this->deviceCodeRepository
-                    ->forUser($request->user()->getKey())
-                    ->sortBy('expires_at')
-                    ->values();
+            ->forUser($request->user()->getKey())
+            ->sortBy('expires_at')
+            ->values();
     }
 
     /**
@@ -105,10 +105,11 @@ class DeviceAccessTokenController
     public function destroy(Request $request, $tokenId)
     {
         $token = $this->deviceCodeRepository->findForUser(
-            $tokenId, $request->user()->getKey()
+            $tokenId,
+            $request->user()->getKey()
         );
 
-        if (is_null($token)) {
+        if (\is_null($token)) {
             return new Response('', 404);
         }
 

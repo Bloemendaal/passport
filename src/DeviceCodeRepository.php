@@ -4,10 +4,13 @@ namespace Laravel\Passport;
 
 class DeviceCodeRepository
 {
-    // @todo fix this temp fuction also unifi functions revoke ect.
+    /** @todo fix this temp fuction also unifi functions revoke ect. */
     public function activate($user_id, $user_code)
     {
-        $deviceCode = Passport::deviceCode()->where('user_code', $user_code)->first();
+        $deviceCode = Passport::deviceCode()
+            ->where('user_code', $user_code)
+            ->first();
+
         $deviceCode->user_id = $user_id;
         $deviceCode->save();
 
@@ -58,17 +61,17 @@ class DeviceCodeRepository
     public function forUser($userId, $id = null)
     {
         $deviceTokens = Passport::token()
-                            ->whereUserId($userId)
-                            ->whereRevoked(false)
-                            ->whereHas('client', function ($query) {
-                                $query->whereDeviceClient(true);
-                            });
+            ->whereUserId($userId)
+            ->whereRevoked(false)
+            ->whereHas('client', function ($query) {
+                $query->whereDeviceClient(true);
+            });
 
         $deviceRequests = Passport::deviceCode()
-                            ->whereUserId($userId)
-                            ->whereRevoked(false);
+            ->whereUserId($userId)
+            ->whereRevoked(false);
 
-        if(! \is_null($id)) {
+        if (!\is_null($id)) {
             $deviceTokens = $deviceTokens->whereId($id);
             $deviceRequests = $deviceRequests->whereId($id);
         }
