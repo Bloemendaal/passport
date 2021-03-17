@@ -15,7 +15,7 @@ class CreateOauthDeviceCodesTable extends Migration
     {
         Schema::create('oauth_device_codes', function (Blueprint $table) {
             $table->string('id', 100)->primary();
-            $table->string('user_code', 9);
+            $table->string('user_code', 9)->nullable();
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->unsignedBigInteger('client_id');
             $table->text('info');

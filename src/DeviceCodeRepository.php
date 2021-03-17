@@ -4,17 +4,22 @@ namespace Laravel\Passport;
 
 class DeviceCodeRepository
 {
-    /** @todo fix this temp fuction also unifi functions revoke ect. */
-    public function activate($user_id, $user_code)
+    /**
+     * Authorizes a device with the user id. Resets the usercode to avoid duplications.
+     * @return string id of the activated device.
+     */
+    public function activate($user_id, $user_code): string
     {
         $deviceCode = Passport::deviceCode()
             ->where('user_code', $user_code)
+            ->whereNull('user_id')
             ->first();
 
         $deviceCode->user_id = $user_id;
+        $deviceCode->user_code = null;
         $deviceCode->save();
 
-        return $deviceCode;
+        return $deviceCode->id;
     }
 
     /**
