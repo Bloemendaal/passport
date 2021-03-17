@@ -64,7 +64,9 @@ trait HasApiTokens
     public function createToken($name, array $scopes = [])
     {
         return Container::getInstance()->make(PersonalAccessTokenFactory::class)->make(
-            $this->getKey(), $name, $scopes
+            $this->getKey(),
+            $name,
+            $scopes
         );
     }
 
@@ -72,12 +74,13 @@ trait HasApiTokens
      * Activate new device for the user.
      * @todo fix this not ready
      * @param  string  $user_code
-     * @return \Laravel\Passport\PersonalAccessTokenResult
+     * @return string id of the device
      */
     public function activateDevice($user_code)
     {
         return Container::getInstance()->make(DeviceCodeRepository::class)->activate(
-            $this->getKey(), $user_code
+            $this->getKey(),
+            $user_code
         );
     }
 
