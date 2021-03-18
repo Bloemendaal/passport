@@ -6,14 +6,18 @@ class DeviceCodeRepository
 {
     /**
      * Authorizes a device with the user id. Resets the usercode to avoid duplications.
-     * @return string id of the activated device.
+     * @return string|null id of the activated device or null when the device was not found.
      */
-    public function activate($user_id, $user_code): string
+    public function activate($user_id, $user_code): ?string
     {
         $deviceCode = Passport::deviceCode()
             ->where('user_code', $user_code)
             ->whereNull('user_id')
             ->first();
+
+        if (!$deviceCode) {
+            return null;
+        }
 
         $deviceCode->user_id = $user_id;
         $deviceCode->user_code = null;

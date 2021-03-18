@@ -74,7 +74,7 @@ trait HasApiTokens
      * Activate new device for the user.
      * @todo fix this not ready
      * @param  string  $user_code
-     * @return string id of the device
+     * @return string|null id of the device or null when there is no device.
      */
     public function activateDevice($user_code)
     {
