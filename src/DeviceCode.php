@@ -3,9 +3,14 @@
 namespace Laravel\Passport;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
+use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\CryptTrait;
 
 class DeviceCode extends Model
 {
+    use CryptTrait;
+
     /**
      * The database table used by the model.
      *
@@ -99,5 +104,33 @@ class DeviceCode extends Model
     public function revoke()
     {
         return $this->forceFill(['revoked' => true])->save();
+    }
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setEncryptionKey(
+            App::make(AuthorizationServer::class)->getEncryptionKey()
+        );
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if ($field === 'decode') {
+            try {
+                $deviceCodePayload = \json_decode($this->decrypt($value));
+
+                if (!\property_exists($deviceCodePayload, 'device_code_id')) {
+                    return null;
+                }
+
+                return $this->where('id', $deviceCodePayload->device_code_id)->first();
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        return parent::resolveRouteBinding($value, $field);
     }
 }
