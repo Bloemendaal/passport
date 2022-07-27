@@ -246,7 +246,8 @@ class PassportServiceProvider extends ServiceProvider
             $this->app->make(Bridge\AccessTokenRepository::class),
             $this->app->make(Bridge\ScopeRepository::class),
             $this->makeCryptKey('private'),
-            app('encrypter')->getKey()
+            app('encrypter')->getKey(),
+            Passport::$authorizationServerResponseType
         );
     }
 
@@ -299,7 +300,7 @@ class PassportServiceProvider extends ServiceProvider
      */
     protected function makeCryptKey($type)
     {
-        $key = str_replace('\\n', "\n", $this->app->make(Config::class)->get('passport.' . $type . '_key'));
+        $key = str_replace('\\n', "\n", $this->app->make(Config::class)->get('passport.'.$type.'_key') ?? '');
 
         if (!$key) {
             $key = 'file://' . Passport::keyPath('oauth-' . $type . '.key');

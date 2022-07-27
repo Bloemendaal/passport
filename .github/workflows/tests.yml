@@ -13,8 +13,13 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.3, 7.4, 8.0]
-        laravel: [^8.0]
+        php: [7.3, 7.4, '8.0', 8.1]
+        laravel: [8, 9]
+        exclude:
+          - php: 7.3
+            laravel: 9
+          - php: 7.4
+            laravel: 9
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
@@ -27,6 +32,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+          ini-values: error_reporting=E_ALL
           tools: composer:v2
           coverage: none
         env:
@@ -34,8 +40,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "illuminate/contracts=${{ matrix.laravel }}" --no-update
-          composer update --prefer-dist --no-interaction --no-progress
+           composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-update
+           composer update --prefer-dist --no-interaction --no-progress
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
