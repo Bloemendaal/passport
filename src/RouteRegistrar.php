@@ -36,6 +36,7 @@ class RouteRegistrar
         $this->forTransientTokens();
         $this->forClients();
         $this->forPersonalAccessTokens();
+        $this->forDeviceAccessTokens();
     }
 
     /**
@@ -45,6 +46,12 @@ class RouteRegistrar
      */
     public function forAuthorization()
     {
+        $this->router->middleware('guest')->post('/device-authorize', [
+            'uses' => 'DeviceAuthorizationController@authorize',
+            'as' => 'passport.authorizations.device',
+            'middleware' => 'throttle',
+        ]);
+
         $this->router->group(['middleware' => ['web', 'auth']], function ($router) {
             $router->get('/authorize', [
                 'uses' => 'AuthorizationController@authorize',
@@ -159,6 +166,37 @@ class RouteRegistrar
             $router->delete('/personal-access-tokens/{token_id}', [
                 'uses' => 'PersonalAccessTokenController@destroy',
                 'as' => 'passport.personal.tokens.destroy',
+            ]);
+        });
+    }
+
+    /**
+     * Register the routes for issuing device codes
+     *
+     * @return void
+     */
+    public function forDeviceAccessTokens()
+    {
+        $this->router->group(['middleware' => ['web', 'auth']], function ($router) {
+            $router->get('/device-tokens', [
+                'uses' => 'DeviceAccessTokenController@forUser',
+                'as' => 'passport.device.tokens.index',
+            ]);
+
+            $router->post('/device-request', [
+                'uses' => 'DeviceAccessTokenController@request',
+                'as' => 'passport.device.tokens.request',
+                'middleware' => 'throttle:5,10',
+            ]);
+
+            $router->post('/device-tokens', [
+                'uses' => 'DeviceAccessTokenController@store',
+                'as' => 'passport.device.tokens.store',
+            ]);
+
+            $router->delete('/device-tokens/{token_id}', [
+                'uses' => 'DeviceAccessTokenController@destroy',
+                'as' => 'passport.device.tokens.destroy',
             ]);
         });
     }
