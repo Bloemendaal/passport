@@ -48,7 +48,7 @@ class ClientControllerTest extends TestCase
 
         $clients->shouldReceive('create')
             ->once()
-            ->with(1, 'client name', 'http://localhost', null, false, false, true)
+            ->with(1, 'client name', 'http://localhost', null, false, false, false, true)
             ->andReturn($client = new Client);
 
         $redirectRule = m::mock(RedirectRule::class);
@@ -65,7 +65,9 @@ class ClientControllerTest extends TestCase
         $validator->shouldReceive('validate')->once();
 
         $controller = new ClientController(
-            $clients, $validator, $redirectRule
+            $clients,
+            $validator,
+            $redirectRule
         );
 
         $this->assertEquals($client, $controller->store($request));
@@ -86,7 +88,7 @@ class ClientControllerTest extends TestCase
 
         $clients->shouldReceive('create')
             ->once()
-            ->with(1, 'client name', 'http://localhost', null, false, false, false)
+            ->with(1, 'client name', 'http://localhost', null, false, false, false, false)
             ->andReturn($client = new Client);
 
         $redirectRule = m::mock(RedirectRule::class);
@@ -104,7 +106,9 @@ class ClientControllerTest extends TestCase
         $validator->shouldReceive('validate')->once();
 
         $controller = new ClientController(
-            $clients, $validator, $redirectRule
+            $clients,
+            $validator,
+            $redirectRule
         );
 
         $this->assertEquals($client, $controller->store($request));
@@ -126,7 +130,9 @@ class ClientControllerTest extends TestCase
         });
 
         $clients->shouldReceive('update')->once()->with(
-            m::type(Client::class), 'client name', 'http://localhost'
+            m::type(Client::class),
+            'client name',
+            'http://localhost'
         )->andReturn('response');
 
         $redirectRule = m::mock(RedirectRule::class);
@@ -142,7 +148,9 @@ class ClientControllerTest extends TestCase
         $validator->shouldReceive('validate')->once();
 
         $controller = new ClientController(
-            $clients, $validator, $redirectRule
+            $clients,
+            $validator,
+            $redirectRule
         );
 
         $this->assertSame('response', $controller->update($request, 1));
@@ -167,7 +175,9 @@ class ClientControllerTest extends TestCase
         $validator = m::mock(Factory::class);
 
         $controller = new ClientController(
-            $clients, $validator, m::mock(RedirectRule::class)
+            $clients,
+            $validator,
+            m::mock(RedirectRule::class)
         );
 
         $this->assertSame(404, $controller->update($request, 1)->status());
@@ -195,7 +205,9 @@ class ClientControllerTest extends TestCase
         $validator = m::mock(Factory::class);
 
         $controller = new ClientController(
-            $clients, $validator, m::mock(RedirectRule::class)
+            $clients,
+            $validator,
+            m::mock(RedirectRule::class)
         );
 
         $response = $controller->destroy($request, 1);
@@ -222,7 +234,9 @@ class ClientControllerTest extends TestCase
         $validator = m::mock(Factory::class);
 
         $controller = new ClientController(
-            $clients, $validator, m::mock(RedirectRule::class)
+            $clients,
+            $validator,
+            m::mock(RedirectRule::class)
         );
 
         $this->assertSame(404, $controller->destroy($request, 1)->status());

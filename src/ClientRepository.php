@@ -57,7 +57,7 @@ class ClientRepository
     {
         $client = $this->find($id);
 
-        return $client && ! $client->revoked ? $client : null;
+        return $client && !$client->revoked ? $client : null;
     }
 
     /**
@@ -72,9 +72,9 @@ class ClientRepository
         $client = Passport::client();
 
         return $client
-                    ->where($client->getKeyName(), $clientId)
-                    ->where('user_id', $userId)
-                    ->first();
+            ->where($client->getKeyName(), $clientId)
+            ->where('user_id', $userId)
+            ->first();
     }
 
     /**
@@ -86,8 +86,8 @@ class ClientRepository
     public function forUser($userId)
     {
         return Passport::client()
-                    ->where('user_id', $userId)
-                    ->orderBy('name', 'asc')->get();
+            ->where('user_id', $userId)
+            ->orderBy('name', 'asc')->get();
     }
 
     /**
@@ -118,7 +118,7 @@ class ClientRepository
 
         $client = Passport::personalAccessClient();
 
-        if (! $client->exists()) {
+        if (!$client->exists()) {
             throw new RuntimeException('Personal access client not found. Please create one.');
         }
 
@@ -134,10 +134,11 @@ class ClientRepository
      * @param  string|null  $provider
      * @param  bool  $personalAccess
      * @param  bool  $password
+     * @param  bool  $device
      * @param  bool  $confidential
      * @return \Laravel\Passport\Client
      */
-    public function create($userId, $name, $redirect, $provider = null, $personalAccess = false, $password = false, $confidential = true)
+    public function create($userId, $name, $redirect, $provider = null, $personalAccess = false, $password = false, $device = false, $confidential = true)
     {
         $client = Passport::client()->forceFill([
             'user_id' => $userId,
@@ -147,6 +148,7 @@ class ClientRepository
             'redirect' => $redirect,
             'personal_access_client' => $personalAccess,
             'password_client' => $password,
+            'device_client' => $device,
             'revoked' => false,
         ]);
 
@@ -184,6 +186,19 @@ class ClientRepository
     public function createPasswordGrantClient($userId, $name, $redirect, $provider = null)
     {
         return $this->create($userId, $name, $redirect, $provider, false, true);
+    }
+
+    /**
+     * Store a new device code grant client.
+     *
+     * @param int $userId
+     * @param string $name
+     * @param string $redirect
+     * @return \Laravel\Passport\Client
+     */
+    public function createDeviceCodeGrantClient($userId, $name, $redirect, $provider = null)
+    {
+        return $this->create($userId, $name, $redirect, $provider, false, false, true, false);
     }
 
     /**

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('redirect');
             $table->boolean('personal_access_client');
             $table->boolean('password_client');
+            $table->boolean('device_client');
             $table->boolean('revoked');
             $table->timestamps();
         });
